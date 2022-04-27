@@ -1,0 +1,6 @@
+DET_SOURCE_DIR: '/home/AICITY2022_Track1_TAG/datasets/detection/images/test/S06/'
+REID_MODEL: 'reid_model/resnet101_ibn_a_3.pth'
+REID_BACKBONE: 'resnet101_ibn_a'
+DET_IMG_DIR: '/home/AICITY2022_Track1_TAG/datasets/detect/'
+DATA_DIR: '/home/AICITY2022_Track1_TAG/datasets/detect_reid3/'
+REID_SIZE_TEST: [384, 384]
