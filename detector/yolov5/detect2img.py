@@ -1,6 +1,7 @@
 import argparse
 import time
 from pathlib import Path
+import shutil
 import numpy as np
 import pickle
 import os
@@ -275,4 +276,4 @@ if __name__ == '__main__':
         im = cv2.resize(im, (1280, 960))
         out.write(im)
     out.release()
-    os.removedirs(path)
+    shutil.rmtree(path, ignore_errors=True)
