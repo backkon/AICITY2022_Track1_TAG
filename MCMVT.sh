@@ -1,4 +1,4 @@
-MCMT_CONFIG_FILE="aictest.yml"
+MCMT_CONFIG_FILE="aic.yml"
 
 cd ./reid_bidir/
 python extract_image_feat.py "aic_reid1.yml"
