@@ -153,9 +153,13 @@ def run(sequence_dir, detection_file,min_box_area = 750):
         #print("Processing frame %05d" % frame_idx)
         img_path = seq_info['image_filenames'][frame_idx]
         save_path = img_path.replace('img1', 'img2')
+        det_save_path = img_path.replace('img1', 'det_debug')
         if not os.path.exists(save_path.split('img2')[0]+ 'img2'):
             os.makedirs(save_path.split('img2')[0]+ 'img2')
+        if not os.path.exists(det_save_path.split('det_debug')[0]+ 'det_debug'):
+            os.makedirs(det_save_path.split('det_debug')[0]+ 'det_debug')
         img = cv2.imread(img_path)
+        img_det = img.copy()
         # h,w,_ = img.shape
 
         # if frame_idx == 0:
@@ -168,17 +172,17 @@ def run(sequence_dir, detection_file,min_box_area = 750):
         if frame_idx not in bbox_dic:
             print(f'empty for {frame_idx}')
             return
-        # detections = bbox_dic[frame_idx]
-        # feats = feat_dic[frame_idx]
-
+        detections = bbox_dic[frame_idx]
+        feats = feat_dic[frame_idx]
+        
         # Run area filter
-        detections_ori = bbox_dic[frame_idx]
-        feats_ori = feat_dic[frame_idx]
-        detections, feats= [], []
-        for i, det in enumerate(detections_ori):
-            if (det[2]-det[0])*(det[3]-det[1]) > 750:
-                detections.append(det)
-                feats.append(feats_ori[i])
+        # detections_ori = bbox_dic[frame_idx]
+        # feats_ori = feat_dic[frame_idx]
+        # detections, feats= [], []
+        # for i, det in enumerate(detections_ori):
+        #     if (det[2]-det[0])*(det[3]-det[1]) > 750:
+        #         detections.append(det)
+        #         feats.append(feats_ori[i])
 
         # Run non-maxima suppression.
         boxes = np.array([d[:4] for d in detections], dtype=float)
@@ -188,11 +192,16 @@ def run(sequence_dir, detection_file,min_box_area = 750):
                                 iou_threshold=0.99).numpy()
         detections = np.array([detections[i] for i in nms_keep], dtype=float)
         feats = np.array([feats[i] for i in nms_keep], dtype=float)
+        for car_idx,bbox in enumerate(detections):
+            trk_color = create_unique_color_uchar(car_idx)
+            cv2.putText(img_det, str(car_idx) + '|' + str(round(bbox[4],2)), (int(bbox[0]), int(bbox[1]) - 4), cv2.FONT_HERSHEY_PLAIN, 1, trk_color, 2)
+            cv2.rectangle(img_det, (int(bbox[0]),int(bbox[1])),(int(bbox[2]),int(bbox[3])), trk_color, 2)
+        cv2.imwrite(det_save_path, img_det)
         #print(detections)
 
         # Update tracker.
-        if frame_idx == 1572:
-            print("t")
+        # if frame_idx == 1572:
+        #     print("t")
         online_targets = tracker.update(detections, feats, frame_idx)
         # Store results.
         cv2.putText(img, str(frame_idx), (10,60), cv2.FONT_HERSHEY_PLAIN, 4, (0,0, 255), 2)
@@ -215,7 +224,7 @@ def run(sequence_dir, detection_file,min_box_area = 750):
 
 
 if __name__ == "__main__":
-    sequence_dir = '/home/backkon/datasets/detection/images/test/S06/c041'
-    detection_file = '/home/backkon/datasets/detect_fusion/c041/c041_dets_feat.pkl'
+    sequence_dir = '/home/gaoyansong/AICITY2022_Track1_TAG/datasets/detection/images/test/S06/c041'
+    detection_file = '/home/gaoyansong/AICITY2022_Track1_TAG/datasets/detect/c041/c041_dets_feat.pkl'
 
     run(sequence_dir, detection_file)

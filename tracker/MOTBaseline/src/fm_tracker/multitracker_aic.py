@@ -260,7 +260,7 @@ class FairTracker(object):
         ''' Step 3: Second association,  with high IOU'''
         detections = [detections[i] for i in u_detection]
         r_tracked_stracks = [strack_pool[i] for i in u_track if strack_pool[i].state == TrackState.Tracked]
-        dists = matching.iou_distance(r_tracked_stracks, detections)  #改为E-IOU
+        dists = matching.iou_distance(r_tracked_stracks, detections)  #TODO:改为E-IOU
         matches, u_track, u_detection = matching.linear_assignment(dists, thresh=self.high_iou_thr)   #距离小于high_iou_thr的就能匹配        
 
         # # pixel_distance 

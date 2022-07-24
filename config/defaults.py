@@ -19,3 +19,4 @@ _C.SCORE_THR = 0.5
 
 _C.MCMT_OUTPUT_TXT = ''
 _C.MCMT_Interpo_OUTPUT_TXT = ''
+_C.FEATURES_DIR = ''

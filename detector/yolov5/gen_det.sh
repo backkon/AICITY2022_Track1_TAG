@@ -1,4 +1,4 @@
-seqs=(c041 c042 c043 c044)
+seqs=(c041 c042 c043)
 gpu_id=0
 for seq in ${seqs[@]}
 do
@@ -7,7 +7,7 @@ do
 done
 wait
 
-seqs=(c045 c046)
+seqs=(c044 c045 c046)
 gpu_id=0
 for seq in ${seqs[@]}
 do

@@ -30,26 +30,29 @@ def ComputeEuclid(array1,array2,fg_sqrt):
     sim = 1/(1+dist)
     return 1-sim
 
-def visual_rerank(prb_feats, gal_feats, cid_tids, _cfg):
+def visual_rerank(prb_feats, gal_feats,idx, cid_tids,P,neg_vectors, _cfg):
     """Rerank by visual cures."""
 
-    gal_labels = np.array([[0, item[0]] for item in cid_tids])
+    gal_labels = np.array([[0, item[0]] for x,item in enumerate(cid_tids) if x in idx])
     prb_labels = gal_labels.copy()
     use_ff = _cfg.USE_FF
     if use_ff:
         # Step1-1: fic. finetuned parameters: [la]
         prb_feats, gal_feats = ff.run_fic(prb_feats, gal_feats,
-                                          prb_labels, gal_labels, 3.0)
+                                          prb_labels, gal_labels,P,neg_vectors)
         # Step1=2: fac. finetuned parameters: [beta,knn,lr,prb_epoch,gal_epoch]
         prb_feats, gal_feats = ff.run_fac(prb_feats, gal_feats,
                                           prb_labels, gal_labels,
                                           0.08, 20, 0.5, 1, 1)
 
     use_rerank = _cfg.USE_RERANK
-    if use_rerank:
+    if use_rerank :   
         # Step2: k-reciprocal. finetuned parameters: [k1,k2,lambda_value]
-        sims = rr.ReRank2(torch.from_numpy(prb_feats).cuda(),
-                          torch.from_numpy(gal_feats).cuda(), 20, 3, 0.3)
+
+        if len(idx) > 20:
+            sims = rr.ReRank2(torch.from_numpy(prb_feats).cuda(),torch.from_numpy(gal_feats).cuda(), 20, 3, 0.3)
+        else:
+            sims = rr.ReRank2(torch.from_numpy(prb_feats).cuda(),torch.from_numpy(gal_feats).cuda(), len(idx)-1, 3, 0.3)
     else:
         # sims = ComputeEuclid(prb_feats, gal_feats, 1)
         sims = 1.0 - np.dot(prb_feats, gal_feats.T)

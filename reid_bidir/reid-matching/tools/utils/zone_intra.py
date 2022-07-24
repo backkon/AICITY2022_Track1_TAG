@@ -128,8 +128,11 @@ class zone():
             for f in frame_list:
                 sub_zone_dict[tracklet_dict[f]['sub_zone']] += 1
 
-            if sub_zone_dict[5] > 1 or sub_zone_dict[6] > 1 or sub_zone_dict[7] > 1 or sub_zone_dict[8] > 1:
-                for f in frame_list:  
+            if sub_zone_dict[5] >= 1 or sub_zone_dict[6] >= 1 or sub_zone_dict[7] >= 1 or sub_zone_dict[8] >= 1:
+                #至少一帧在目标区域
+                for f in frame_list:
+                    #对sub_zone进行校正
+                    # TODO:这样的校正是不是有问题？
                     if sub_zone_dict[5] > sub_zone_dict[6] and sub_zone_dict[6] > 0 and tracklet_dict[f]['sub_zone'] == 6:
                         tracklet_dict[f]['sub_zone'] = 5
                     elif sub_zone_dict[6] >= sub_zone_dict[5] and sub_zone_dict[5] > 0 and tracklet_dict[f]['sub_zone'] == 5:
@@ -140,6 +143,8 @@ class zone():
                         tracklet_dict[f]['sub_zone'] = 8
                         
                 zones_sum = len(frame_list)
+                
+                # TODO:构建合理的逻辑
                 if sub_zone_dict[5] == zones_sum and frame_list[-1] <= 1999:
                     continue
                 elif sub_zone_dict[8] == zones_sum and frame_list[-1] <= 1999:

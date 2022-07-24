@@ -1,5 +1,9 @@
 MCMT_CONFIG_FILE="aic.yml"
 
+cd ./detector/yolov5
+# sh gen_det.sh ${MCMT_CONFIG_FILE}
+
+cd ../..
 cd ./reid_bidir/
 python extract_image_feat.py "aic_reid1.yml"
 python extract_image_feat.py "aic_reid2.yml"

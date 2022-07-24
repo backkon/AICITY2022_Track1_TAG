@@ -50,11 +50,11 @@ def mergesetfeat3(X,labels,gX,glabels,beta=0.08,knn=20,lr=0.5):
             X[i,:] /= np.linalg.norm(X[i,:])
     return X
 
-def mergesetfeat1_notrk(P,neg_vector,in_feats,in_labels):
+def mergesetfeat1_notrk(P,neg_vectors,in_feats,in_labels):
     out_feats = []
     for i in range(in_feats.shape[0]):
         camera_id = in_labels[i,1]
-        feat = in_feats[i] - neg_vector[camera_id]
+        feat = in_feats[i] - neg_vectors[camera_id]
         feat = P[camera_id].dot(feat)
         feat = feat/np.linalg.norm(feat,ord=2)
         out_feats.append(feat)
@@ -97,10 +97,10 @@ def mergesetfeat(in_feats,in_labels,in_tracks):
     out_labels = np.vstack(out_labels)
     return out_feats,out_labels
 
-def run_fic(prb_feats,gal_feats,prb_labels,gal_labels,la=3.0):
-    P,neg_vector = compute_P2(prb_feats,gal_feats,gal_labels,la)
-    prb_feats_new = mergesetfeat1_notrk(P,neg_vector,prb_feats,prb_labels)
-    gal_feats_new = mergesetfeat1_notrk(P,neg_vector,gal_feats,gal_labels)
+def run_fic(prb_feats,gal_feats,prb_labels,gal_labels,P,neg_vectors):
+    # P,neg_vector = compute_P2(prb_feats,gal_feats,gal_labels,la)
+    prb_feats_new = mergesetfeat1_notrk(P,neg_vectors,prb_feats,prb_labels)
+    gal_feats_new = mergesetfeat1_notrk(P,neg_vectors,gal_feats,gal_labels)
     return prb_feats_new,gal_feats_new
 
 def run_fac(prb_feats,gal_feats,prb_labels,gal_labels,beta=0.08,knn=20,lr=0.5,prb_epoch=2,gal_epoch=3): 

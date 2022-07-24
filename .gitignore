@@ -1,0 +1,10 @@
+__pycache__/
+exp/
+datasets/
+*.mp4
+*.avi
+*.pt
+*.pth
+*.pkl
+*.jpg
+*.png
